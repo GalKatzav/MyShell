@@ -2,6 +2,7 @@
 
 char *getInputFromUser()
 {
+    // second
     char ch;
     int size = 1;
     int index = 0;
