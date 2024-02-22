@@ -3,54 +3,48 @@
 
 int main()
 {
+
     welcome();
-    getLocation();
     while (1)
     {
         getLocation();
         char *input = getInputFromUser();
-        char **arg = splitArgument(input);
-        int i = 0;
-        while (*(arg + i) != NULL)
+        if (strcmp(input, "exit") == 0 || strncmp(input, "exit ", 5) == 0)
+            logout(input);
+        char **arguments = splitArgument(input);
+        if (strcmp(input, "echo") == 0)
+            echo(arguments);
+        else if (strcmp(input, "cd") == 0)
         {
-            puts(arg[i]);
-            i++;
+            cd(arguments);
+            // getLocation();
         }
-
-        if (strcmp(input, "exit") == 0)
-        {
-            free(arg);
-            free(input);
-            puts("Log out");
-            break;
-        }
-        free(arg);
+        else if (strcmp(input, "cp") == 0)
+            cp(arguments);
+        free(arguments);
         free(input);
     }
-
-    return 0;
 }
-// example
 
-//                      aSPY//YASa
-//              apyyyyCY//////////YCa       |
-//             sY//////YSpcs  scpCY//Pp     | Welcome to myShell
-//  ayp ayyyyyyySCP//Pp           syY//C    | Version 2.4.3
-//  AYAsAYYYYYYYY///Ps              cY//S   |
-//          pCCCCY//p          cSSps y//Y   | https://github.com/<user>
-//          SPPPP///a          pP///AC//Y   |
-//               A//A            cyP////C   | Have fun!
-//               p///Ac            sC///a   |
-//               P////YCpc           A//A   | Wanna support scapy? Rate it on
-//        scccccp///pSP///p          p//Y   | sectools!
-//       sY/////////y  caa           S//P   | http://sectools.org/tool/scapy/
-//        cayCyayP//Ya              pY/Ya   |             -- Satoshi Nakamoto
-//         sY/PsY////YCc          aC//Yp    |
-//          sc  sccaCY//PCypaapyCP//YSs
-//                   spCPY//////YPSps
-//                        ccaacs
-//                                        using c
 void welcome()
 {
-    puts("Welcome to my Shell");
+    printf(
+        "                     aGPY//YAGa\n"
+        "              apyyyyCY//////////YCa       |\n"
+        "             GY//////YGpcg  gcpCY//Pg     | Welcome to myShell\n"
+        "  ayp ayyyyyyyCGP//Pg           gyY//C    | Version 2.4.3\n"
+        "  AYAgAYYYYYYYY///Pg              cY//G   |\n"
+        "          pCCCCY//p          cGGpg y//Y   | https://github.com/GalKatzav/MyShell.git\n"
+        "          GPPPP///a          pP///AC//Y   |\n"
+        "               A//A            cyP////C   | Have fun!\n"
+        "               p///Ac            sC///a   |\n"
+        "               P////YCpc           A//A   | Craft packets like it is your last\n"
+        "        ggggggp///pGP///p          p//Y   | day on earth.\n"
+        "       gY/////////y  caa           G//P   |                      -- Lao-Tze\n"
+        "        cayCyayP//Ya              pY/Ya   |\n"
+        "         gY/PgY////YGCg          aC//Yp\n"
+        "          gc  gccgAY//PGgpaapyaCP//YGg\n"
+        "                   gpGPY//////YGPgp\n"
+        "                        ggaagg\n"
+        "                                                                           using c\n");
 }

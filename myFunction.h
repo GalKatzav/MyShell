@@ -3,9 +3,12 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-
 #define BUFF_SIZE 256
+#define blue() printf("\033[0;34m")
+#define reset() printf("\033[0m")
+#define green() printf("\033[0;32m")
+#define bold() printf("\e[1m")
+#define boldOff() printf("\e[m")
 
 char *getInputFromUser();
 // cp file file
@@ -34,3 +37,9 @@ char *getInputFromUser();
 char **splitArgument(char *);
 
 void getLocation();
+
+void logout(char *);
+void echo(char **);
+void cd(char **);
+void cp(char **);
+void get_dir();
