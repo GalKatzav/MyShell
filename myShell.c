@@ -9,7 +9,7 @@ int main()
     {
         getLocation();
         char *input = getInputFromUser();
-        if (strcmp(input, "exit") == 0 || strncmp(input, "exit ", 5) == 0)
+        if (strcmp(input, "exit") == 0 || strncmp(input, "exit ", 5) == 0 || strncmp(input, " exit", 5) == 0 || strncmp(input, " exit ", 6) == 0)
             logout(input);
         char **arguments = splitArgument(input);
         if (strcmp(input, "echo") == 0)
