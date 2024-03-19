@@ -308,6 +308,71 @@ void systemCall(char **arg)
     if (pid == 0 && execvp(arg[0], arg) == -1)
         exit(1);
 }
+
+char **splitInput(char *input, char ***argv2) {
+    int len = strlen(input);
+
+    // Find the position of the '|' character
+    int pipe_position = -1;
+    for (int i = 0; i < len; i++) {
+        if (input[i] == '|') {
+            pipe_position = i;
+            break;
+        }
+    }
+
+    // If '|' is not found, return NULL for argv2
+    if (pipe_position == -1) {
+        *argv2 = NULL;
+        return NULL;
+    }
+
+    // Allocate memory for argv1
+    char **argv1 = (char **)malloc((pipe_position + 1) * sizeof(char *));
+    if (argv1 == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy argv1 strings
+    char *token = strtok(input, " ");
+    int i = 0;
+    while (token != NULL && token != "|") {
+        argv1[i] = strdup(token);
+        if (argv1[i] == NULL) {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+        token = strtok(NULL, " ");
+        i++;
+    }
+    argv1[i] = NULL;
+
+    // Allocate memory for argv2
+    *argv2 = (char **)malloc((len - pipe_position) * sizeof(char *));
+    if (*argv2 == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy argv2 strings
+    i = 0;
+    token = strtok(NULL, " ");
+    while (token != NULL) {
+        (*argv2)[i] = strdup(token);
+        if ((*argv2)[i] == NULL) {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+        token = strtok(NULL, " ");
+        i++;
+    }
+    (*argv2)[i] = NULL;
+
+    return argv1;
+}
+
+
 void mypipe(char **argv1, char **argv2)
 {
     int fildes[2];
