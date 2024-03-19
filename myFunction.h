@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #define BUFF_SIZE 256
 #define blue() printf("\033[0;34m")
 #define reset() printf("\033[0m")
@@ -43,3 +44,6 @@ void echo(char **);
 void cd(char **);
 void cp(char **);
 void get_dir();
+void delete(char **);
+void systemCall(char **);
+void mypipe(char **, char **);

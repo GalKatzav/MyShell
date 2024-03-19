@@ -260,3 +260,77 @@ void cp(char **arguments)
     fclose(src);
     fclose(des);
 }
+
+void delete(char **path)
+{
+    // Concatenate path arguments into a single string
+    int len = 0;
+    for (int i = 1; path[i] != NULL; i++)
+    {
+        len += strlen(path[i]);
+        if (path[i + 1] != NULL)
+            len++; // Space
+    }
+
+    char *full_path = (char *)malloc(len + 1); // +1 for null terminator
+    full_path[0] = '\0';                       // Start with an empty string
+
+    for (int i = 1; path[i] != NULL; i++)
+    {
+        strcat(full_path, path[i]);
+        if (path[i + 1] != NULL)
+        {
+            strcat(full_path, " "); // Space between path components
+        }
+    }
+
+    if (unlink(full_path) != 0)
+    {
+        printf("-myShell: path: %s: No such file or directory\n", full_path);
+    }
+    else
+    {
+        printf("File deleted successfully: %s\n", full_path);
+    }
+
+    free(full_path);
+}
+
+void systemCall(char **arg)
+{
+
+    pid_t pid = fork();
+    if (pid == -1)
+    {
+        printf("fork err\n");
+        return;
+    }
+    if (pid == 0 && execvp(arg[0], arg) == -1)
+        exit(1);
+}
+void mypipe(char **argv1, char **argv2)
+{
+    int fildes[2];
+    if (fork() == 0)
+    {
+        pipe(fildes);
+        if (fork() == 0)
+        {
+            /* first component of command line */
+            close(STDOUT_FILENO);
+            dup(fildes[1]);
+            close(fildes[1]);
+            close(fildes[0]);
+            /* stdout now goes to pipe */
+            /* child process does command */
+            execvp(argv1[0], argv1);
+        }
+        /* 2nd command component of command line */
+        close(STDIN_FILENO);
+        dup(fildes[0]);
+        close(fildes[0]);
+        close(fildes[1]);
+        /* standard input now comes from pipe */
+        execvp(argv2[0], argv2);
+    }
+}
