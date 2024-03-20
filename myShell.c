@@ -7,8 +7,7 @@ int main()
     welcome();
     while (1)
     {
-        int piping = 1;
-        char input1[] = "ls -l | grep g";
+        int piping = 0;
         int pipeIndex;
         getLocation();
         char *input = getInputFromUser();
@@ -28,11 +27,17 @@ int main()
             delete (arguments);
         else if (piping)
         {
-            char **beforePipe = splitInput(input1, &pipeIndex);
-            char **afterPipe = splitAfterPipe(input1, pipeIndex);
+            char **beforePipe = splitInput(input, &pipeIndex);
+            char **afterPipe = splitAfterPipe(input, pipeIndex);
 
             mypipe(beforePipe, afterPipe);
             wait(NULL);
+        }
+        // else if (strcmp(input, "mv") == 0)
+        //     move(arguments);
+        else if (strcmp(arguments[0], "mv") == 0 && arguments[1] != NULL && arguments[2] != NULL)
+        {
+            move(arguments[1], arguments[2]);
         }
         else
         {

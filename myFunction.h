@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <errno.h>
+
 #define BUFF_SIZE 256
 #define blue() printf("\033[0;34m")
 #define reset() printf("\033[0m")
@@ -49,3 +52,5 @@ void systemCall(char **);
 char **splitInput(char *, int *);
 char **splitAfterPipe(char *, int);
 void mypipe(char **, char **);
+void move(char *, char *);
+char **splitPath(char *);

@@ -74,7 +74,7 @@ char *strwok(char *str, const char *delim)
     next_token = current; // No more tokens
     return token_start;   // Return the last token
 }
-
+/*
 char **splitArgument(char *str)
 {
     // str = cp file file file
@@ -95,6 +95,43 @@ char **splitArgument(char *str)
     *(argumnts + (index + 1)) = NULL;
 
     return argumnts;
+}
+*/
+
+
+char **splitArgument(char *str)
+{
+    // Handling paths with spaces within double quotes
+    //[cp, "file path with spaces", "destination path with spaces", NULL]
+
+    char **arguments = (char **)malloc(100 * sizeof(char *));
+    int argc = 0;
+    char *token = strwok(str, " ");
+    while (token != NULL)
+    {
+        if (token[0] == '"')
+        {
+            char temp[1000] = "";
+            strcat(temp, token + 1);
+            while (token[strlen(token) - 1] != '"' && (token = strwok(NULL, " ")) != NULL)
+            {
+                strcat(temp, " ");
+                strcat(temp, token);
+            }
+            // Remove the closing double quote
+            temp[strlen(temp) - 1] = '\0';
+            arguments[argc] = strdup(temp);
+        }
+        else
+        {
+            arguments[argc] = strdup(token);
+        }
+        argc++;
+        token = strwok(NULL, " ");
+    }
+    arguments[argc] = NULL;
+
+    return arguments;
 }
 
 // This function retrieves the current working directory, hostname,
@@ -436,5 +473,20 @@ void mypipe(char **argv1, char **argv2)
         close(fildes[1]);
         /* standard input now comes from pipe */
         execvp(argv2[0], argv2);
+    }
+}
+
+void move(char *source_path, char *destination_path)
+{
+    printf("Source Path: %s\n", source_path);
+    printf("Destination Path: %s\n", destination_path);
+
+    if (rename(source_path, destination_path) == 0)
+    {
+        printf("File moved successfully.\n");
+    }
+    else
+    {
+        perror("Error");
     }
 }
