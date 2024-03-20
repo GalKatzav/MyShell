@@ -309,69 +309,108 @@ void systemCall(char **arg)
         exit(1);
 }
 
-char **splitInput(char *input, char ***argv2) {
-    int len = strlen(input);
+// Function to split the input string up to '|'
+char **splitInput(char *input, int *pipeIndex)
+{
+    // Allocate memory for the array of strings
+    char **arguments = malloc(strlen(input) * sizeof(char *));
+    if (arguments == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
 
-    // Find the position of the '|' character
-    int pipe_position = -1;
-    for (int i = 0; i < len; i++) {
-        if (input[i] == '|') {
-            pipe_position = i;
+    // Initialize variables
+    int argCount = 0;
+    int index = 0;
+    *pipeIndex = -1;
+
+    // Iterate through the input string
+    for (int i = 0; input[i] != '\0'; i++)
+    {
+        // If '|' is found, set pipeIndex and break
+        if (input[i] == '|')
+        {
+            *pipeIndex = i;
             break;
         }
-    }
-
-    // If '|' is not found, return NULL for argv2
-    if (pipe_position == -1) {
-        *argv2 = NULL;
-        return NULL;
-    }
-
-    // Allocate memory for argv1
-    char **argv1 = (char **)malloc((pipe_position + 1) * sizeof(char *));
-    if (argv1 == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-
-    // Copy argv1 strings
-    char *token = strtok(input, " ");
-    int i = 0;
-    while (token != NULL && token != "|") {
-        argv1[i] = strdup(token);
-        if (argv1[i] == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
+        // Otherwise, add characters to the current argument
+        if (input[i] != ' ')
+        {
+            int start = i;
+            // Find the end of the current argument
+            while (input[i] != ' ' && input[i] != '|' && input[i] != '\0')
+                i++;
+            int end = i;
+            // Allocate memory for the current argument
+            arguments[argCount] = malloc((end - start + 1) * sizeof(char));
+            if (arguments[argCount] == NULL)
+            {
+                fprintf(stderr, "Memory allocation failed\n");
+                exit(EXIT_FAILURE);
+            }
+            // Copy characters to the current argument
+            strncpy(arguments[argCount], input + start, end - start);
+            arguments[argCount][end - start] = '\0';
+            // Increment argument count
+            argCount++;
         }
-        token = strtok(NULL, " ");
-        i++;
-    }
-    argv1[i] = NULL;
-
-    // Allocate memory for argv2
-    *argv2 = (char **)malloc((len - pipe_position) * sizeof(char *));
-    if (*argv2 == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
     }
 
-    // Copy argv2 strings
-    i = 0;
-    token = strtok(NULL, " ");
-    while (token != NULL) {
-        (*argv2)[i] = strdup(token);
-        if ((*argv2)[i] == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
-        token = strtok(NULL, " ");
-        i++;
-    }
-    (*argv2)[i] = NULL;
+    // Null-terminate the array of strings
+    arguments[argCount] = NULL;
 
-    return argv1;
+    return arguments;
 }
 
+// Function to split the input string after '|'
+char **splitAfterPipe(char *input, int pipeIndex)
+{
+    // Allocate memory for the array of strings
+    char **arguments = malloc(strlen(input) * sizeof(char *));
+    if (arguments == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialize variables
+    int argCount = 0;
+
+    // Iterate through the input string starting from pipeIndex + 1
+    for (int i = pipeIndex + 1; input[i] != '\0'; i++)
+    {
+        // Skip leading spaces after '|'
+        while (input[i] == ' ')
+            i++;
+        // Add characters to the current argument
+        if (input[i] != '\0')
+        {
+            int start = i;
+            // Find the end of the current argument
+            while (input[i] != ' ' && input[i] != '\0')
+                i++;
+            int end = i;
+            // Allocate memory for the current argument
+            arguments[argCount] = malloc((end - start + 1) * sizeof(char));
+            if (arguments[argCount] == NULL)
+            {
+                fprintf(stderr, "Memory allocation failed\n");
+                exit(EXIT_FAILURE);
+            }
+            // Copy characters to the current argument
+            strncpy(arguments[argCount], input + start, end - start);
+            arguments[argCount][end - start] = '\0';
+            // Increment argument count
+            argCount++;
+        }
+    }
+
+    // Null-terminate the array of strings
+    arguments[argCount] = NULL;
+
+    return arguments;
+}
 
 void mypipe(char **argv1, char **argv2)
 {

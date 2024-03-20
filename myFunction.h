@@ -46,5 +46,6 @@ void cp(char **);
 void get_dir();
 void delete(char **);
 void systemCall(char **);
-char **splitInput(char *, char ***);
+char **splitInput(char *, int *);
+char **splitAfterPipe(char *, int);
 void mypipe(char **, char **);

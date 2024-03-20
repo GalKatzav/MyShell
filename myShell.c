@@ -8,6 +8,8 @@ int main()
     while (1)
     {
         int piping = 1;
+        char input1[] = "ls -l | grep g";
+        int pipeIndex;
         getLocation();
         char *input = getInputFromUser();
         if (strcmp(input, "exit") == 0 || strncmp(input, "exit ", 5) == 0 || strncmp(input, " exit", 5) == 0 || strncmp(input, " exit ", 6) == 0)
@@ -26,39 +28,11 @@ int main()
             delete (arguments);
         else if (piping)
         {
+            char **beforePipe = splitInput(input1, &pipeIndex);
+            char **afterPipe = splitAfterPipe(input1, pipeIndex);
 
-            // Define pointers for argv1 and argv2
-            char **argv1, **argv2;
-
-            // Call splitInput to split the input and get argv1 and argv2
-            argv1 = splitInput(input, &argv2);
-
-            // If both argv1 and argv2 are not NULL, call mypipe
-            if (argv1 != NULL && argv2 != NULL)
-            {
-                mypipe(argv1, argv2);
-                wait(NULL);
-            }
-
-            // Free allocated memory for argv1
-            if (argv1 != NULL)
-            {
-                for (int i = 0; argv1[i] != NULL; i++)
-                {
-                    free(argv1[i]);
-                }
-                free(argv1);
-            }
-
-            // Free allocated memory for argv2
-            if (argv2 != NULL)
-            {
-                for (int i = 0; argv2[i] != NULL; i++)
-                {
-                    free(argv2[i]);
-                }
-                free(argv2);
-            }
+            mypipe(beforePipe, afterPipe);
+            wait(NULL);
         }
         else
         {
