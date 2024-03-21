@@ -135,8 +135,6 @@ char **splitArgument(char *str)
     return arguments;
 }
 
-// This function retrieves the current working directory, hostname,
-// and username of the currently logged-in user, and prints them in the format
 void getLocation()
 {
     char location[BUFF_SIZE]; // Chars array
@@ -347,7 +345,6 @@ void systemCall(char **arg)
         exit(1);
 }
 
-// Function to split the input string up to '|'
 char **splitInput(char *input, int *pipeIndex)
 {
     // Allocate memory for the array of strings
@@ -401,7 +398,6 @@ char **splitInput(char *input, int *pipeIndex)
     return arguments;
 }
 
-// Function to split the input string after '|'
 char **splitAfterPipe(char *input, int pipeIndex)
 {
     // Allocate memory for the array of strings
