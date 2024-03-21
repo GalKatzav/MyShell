@@ -33,12 +33,8 @@ int main()
             mypipe(beforePipe, afterPipe);
             wait(NULL);
         }
-        // else if (strcmp(input, "mv") == 0)
-        //     move(arguments);
-        else if (strcmp(arguments[0], "mv") == 0 && arguments[1] != NULL && arguments[2] != NULL)
-        {
-            move(arguments[1], arguments[2]);
-        }
+        else if (strcmp(input, "mv") == 0)
+            move(arguments);
         else
         {
             systemCall(arguments);

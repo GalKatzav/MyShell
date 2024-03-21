@@ -74,6 +74,8 @@ char *strwok(char *str, const char *delim)
     next_token = current; // No more tokens
     return token_start;   // Return the last token
 }
+
+// split
 /*
 char **splitArgument(char *str)
 {
@@ -97,7 +99,6 @@ char **splitArgument(char *str)
     return argumnts;
 }
 */
-
 
 char **splitArgument(char *str)
 {
@@ -476,17 +477,37 @@ void mypipe(char **argv1, char **argv2)
     }
 }
 
-void move(char *source_path, char *destination_path)
+void move(char **args)
 {
-    printf("Source Path: %s\n", source_path);
-    printf("Destination Path: %s\n", destination_path);
+    char srcPath[2048] = {0};
+    char destPath[2048] = {0};
 
-    if (rename(source_path, destination_path) == 0)
+    strcat(srcPath, args[1]);
+    if (args[2] != NULL)
     {
-        printf("File moved successfully.\n");
+        strcat(srcPath, " ");
+        strcat(srcPath, args[2]);
+    }
+
+    if (args[3] != NULL)
+    {
+        strcat(destPath, args[3]);
+        if (args[4] != NULL)
+        {
+            strcat(destPath, " ");
+            strcat(destPath, args[4]);
+        }
+    }
+
+    printf("Attempting to move from '%s' to '%s'\n", srcPath, destPath);
+
+    // Attempt to move/rename the file
+    if (rename(srcPath, destPath) == 0)
+    {
+        printf("File successfully moved.\n");
     }
     else
     {
-        perror("Error");
+        perror("Error moving file");
     }
 }

@@ -52,5 +52,4 @@ void systemCall(char **);
 char **splitInput(char *, int *);
 char **splitAfterPipe(char *, int);
 void mypipe(char **, char **);
-void move(char *, char *);
-char **splitPath(char *);
+void move(char **);
