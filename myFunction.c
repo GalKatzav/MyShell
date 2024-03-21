@@ -617,3 +617,96 @@ void echorite(char **args)
 
     printf("Content written to '%s'.\n", filePath);
 }
+
+void readd(char **args)
+{
+    if (args[1] == NULL)
+    {
+        fprintf(stderr, "Usage: read <path>\n");
+        return;
+    }
+    char filePath[2048] = {0};
+    for (int i = 1; args[i] != NULL; ++i)
+    {
+        if (i > 1)
+            strcat(filePath, " ");
+        strcat(filePath, args[i]);
+    }
+    FILE *file = fopen(filePath, "r");
+    if (!file)
+    {
+        perror("Error opening file");
+        return;
+    }
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+        printf("%s", buffer);
+    }
+
+    fclose(file);
+}
+
+void wordCount(char **args)
+{
+    // Check if arguments are provided correctly
+    if (args[1] == NULL || args[2] == NULL)
+    {
+        fprintf(stderr, "Usage: wc <-l/-w> <file path>\n");
+        return;
+    }
+
+    // Extract options and file path
+    char *option = args[1];
+    char *file_path = args[2];
+
+    // Open file for reading
+    FILE *file = fopen(file_path, "r");
+    if (file == NULL)
+    {
+        printf("File '%s' does not exist or cannot be opened.\n", file_path);
+        return;
+    }
+
+    int count = 0; // Counter for lines or words
+
+    // Count lines or words based on the selected option
+    if (strcmp(option, "-l") == 0)
+    {
+        char buffer[1024];
+        while (fgets(buffer, sizeof(buffer), file) != NULL)
+        {
+            count++;
+        }
+        printf("Number of lines in the file: %d\n", count);
+    }
+    else if (strcmp(option, "-w") == 0)
+    {
+        int prev_char = ' ';
+        int current_char;
+        while ((current_char = fgetc(file)) != EOF)
+        {
+            if (current_char == ' ' || current_char == '\n' || current_char == '\t')
+            {
+                if (prev_char != ' ' && prev_char != '\n' && prev_char != '\t')
+                {
+                    count++;
+                }
+            }
+            prev_char = current_char;
+        }
+        // Check for the last word
+        if (prev_char != ' ' && prev_char != '\n' && prev_char != '\t')
+        {
+            count++;
+        }
+        printf("Number of words in the file: %d\n", count);
+    }
+    else
+    {
+        fprintf(stderr, "Invalid option. Usage: wc <-l/-w> <file path>\n");
+    }
+
+    // Close file
+    fclose(file);
+}

@@ -59,6 +59,10 @@ int main()
         }
         else if (strcmp(input, "mv") == 0)
             move(arguments);
+        else if (strcmp(input, "read") == 0)
+            readd(arguments);
+        else if (strcmp(input, "wc") == 0)
+            wordCount(arguments);
         else
         {
             systemCall(arguments);

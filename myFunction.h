@@ -55,3 +55,5 @@ void mypipe(char **, char **);
 void move(char **);
 void echoppend(char **);
 void echorite(char **);
+void readd(char **);
+void wordCount(char **);
