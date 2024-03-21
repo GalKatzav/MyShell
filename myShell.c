@@ -14,8 +14,32 @@ int main()
         if (strcmp(input, "exit") == 0 || strncmp(input, "exit ", 5) == 0 || strncmp(input, " exit", 5) == 0 || strncmp(input, " exit ", 6) == 0)
             logout(input);
         char **arguments = splitArgument(input);
-        if (strcmp(input, "echo") == 0)
+        int foundTwoRedirect = 0;
+        int foundOneRedirect = 0;
+        for (int i = 0; arguments[i] != NULL; i++)
+        {
+            if (strcmp(arguments[i], ">>") == 0)
+            {
+                foundTwoRedirect = 1;
+                break;
+            }
+            else if (strcmp(arguments[i], ">") == 0)
+            {
+                foundOneRedirect = 1;
+                break;
+            }
+        }
+
+        if (foundTwoRedirect)
+        {
+            echoppend(arguments);
+        }
+        else if (foundOneRedirect)
+            echorite(arguments);
+        else if (strcmp(arguments[0], "echo") == 0)
+        {
             echo(arguments);
+        }
         else if (strcmp(input, "cd") == 0)
         {
             cd(arguments);

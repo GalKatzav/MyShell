@@ -511,3 +511,109 @@ void move(char **args)
         perror("Error moving file");
     }
 }
+
+void echoppend(char **args)
+{
+    // Variables to hold the concatenated text and file path
+    char textToAppend[2048] = {0};
+    char filePath[2048] = {0};
+
+    int redirectIndex = -1; // Index of ">>" in args
+    for (int i = 0; args[i] != NULL; ++i)
+    {
+        if (strcmp(args[i], ">>") == 0)
+        {
+            redirectIndex = i;
+            break;
+        }
+    }
+
+    if (redirectIndex == -1)
+    {
+        fprintf(stderr, "Error: Command format incorrect. Expected '>>' for redirection.\n");
+        return;
+    }
+
+    // Concatenate everything before ">>" as the text to append
+    for (int i = 1; i < redirectIndex; ++i)
+    {
+        strcat(textToAppend, args[i]);
+        if (i < redirectIndex - 1)
+            strcat(textToAppend, " "); // Add space except for the last part
+    }
+
+    // Concatenate everything after ">>" as the file path
+    for (int i = redirectIndex + 1; args[i] != NULL; ++i)
+    {
+        strcat(filePath, args[i]);
+        if (args[i + 1] != NULL)
+            strcat(filePath, " "); // Add space except for the last part
+    }
+
+    // Attempt to open the file for appending
+    FILE *file = fopen(filePath, "a");
+    if (file == NULL)
+    {
+        perror("Error opening file");
+        return;
+    }
+
+    // Append the text and a newline, then close the file
+    fprintf(file, "%s\n", textToAppend);
+    fclose(file);
+
+    printf("Appended '%s' to '%s'.\n", textToAppend, filePath);
+}
+
+void echorite(char **args)
+{
+    char textToWrite[2048] = {0};
+    char filePath[2048] = {0};
+
+    // Finding the ">"
+    int foundRedirection = 0;
+    for (int i = 1; args[i] != NULL; i++)
+    {
+        if (strcmp(args[i], ">") == 0)
+        {
+            foundRedirection = 1;
+            if (args[i + 1] != NULL)
+            {
+                for (int j = i + 1; args[j] != NULL; j++)
+                {
+                    if (j > i + 1)
+                        strcat(filePath, " ");
+                    strcat(filePath, args[j]);
+                }
+            }
+            else
+            {
+                fprintf(stderr, "File path not provided.\n");
+                return;
+            }
+            break;
+        }
+        else
+        {
+
+            if (i > 1)
+                strcat(textToWrite, " ");
+            strcat(textToWrite, args[i]);
+        }
+    }
+    if (!foundRedirection)
+    {
+        fprintf(stderr, "Redirection operator '>' not found.\n");
+        return;
+    }
+    FILE *file = fopen(filePath, "w");
+    if (!file)
+    {
+        perror("Error opening file");
+        return;
+    }
+    fprintf(file, "%s\n", textToWrite);
+    fclose(file);
+
+    printf("Content written to '%s'.\n", filePath);
+}

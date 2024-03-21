@@ -53,3 +53,5 @@ char **splitInput(char *, int *);
 char **splitAfterPipe(char *, int);
 void mypipe(char **, char **);
 void move(char **);
+void echoppend(char **);
+void echorite(char **);
