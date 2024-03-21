@@ -649,16 +649,24 @@ void readd(char **args)
 
 void wordCount(char **args)
 {
-    // Check if arguments are provided correctly
+    // Check if at least an option and part of a file path are provided
     if (args[1] == NULL || args[2] == NULL)
     {
         fprintf(stderr, "Usage: wc <-l/-w> <file path>\n");
         return;
     }
 
-    // Extract options and file path
+    // Extract option
     char *option = args[1];
-    char *file_path = args[2];
+
+    // Concatenate all remaining arguments to form the file path, handling spaces
+    char file_path[2048] = {0};
+    for (int i = 2; args[i] != NULL; ++i)
+    {
+        if (i > 2)
+            strcat(file_path, " "); // Add spaces back between parts of the path
+        strcat(file_path, args[i]);
+    }
 
     // Open file for reading
     FILE *file = fopen(file_path, "r");
@@ -695,7 +703,7 @@ void wordCount(char **args)
             }
             prev_char = current_char;
         }
-        // Check for the last word
+        // Check for the last word if not ending in space/newline
         if (prev_char != ' ' && prev_char != '\n' && prev_char != '\t')
         {
             count++;

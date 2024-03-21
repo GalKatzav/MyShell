@@ -17,6 +17,7 @@
 char *getInputFromUser();
 // cp file file
 // [cp,file,file]
+
 /**
  * Splits a string into individual tokens based on whitespace.
  *
