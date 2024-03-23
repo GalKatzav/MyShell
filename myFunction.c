@@ -9,14 +9,20 @@ char *getInputFromUser()
     char ch;
     int size = 1;
     int index = 0;
+    // Allocate memory for a single character
     char *str = (char *)malloc(size * sizeof(char));
+    // Loop until newline character is encountered
     while ((ch = getchar()) != '\n')
     {
+        // Store the character in the strin
         *(str + index) = ch;
+        // Increase the size of the string
         size++;
         index++;
+        // Reallocate memory for the string
         str = (char *)realloc(str, size * sizeof(char));
     }
+    // Terminate the string with null character
     *(str + index) = '\0';
 
     return str;
@@ -74,31 +80,6 @@ char *strwok(char *str, const char *delim)
     next_token = current; // No more tokens
     return token_start;   // Return the last token
 }
-
-// split
-/*
-char **splitArgument(char *str)
-{
-    // str = cp file file file
-    //[cp,file,file,file,NULL]
-    char *subStr;
-    int size = 2;
-    int index = 0;
-    subStr = strwok(str, " ");
-    char **argumnts = (char **)malloc(size * sizeof(char *));
-    *(argumnts + index) = subStr;
-    while ((subStr = strwok(NULL, " ")) != NULL)
-    {
-        size++;
-        index++;
-        *(argumnts + index) = subStr;
-        argumnts = (char **)realloc(argumnts, size * sizeof(char *));
-    }
-    *(argumnts + (index + 1)) = NULL;
-
-    return argumnts;
-}
-*/
 
 char **splitArgument(char *str)
 {
@@ -277,22 +258,27 @@ void cp(char **arguments)
 {
     char ch;
     FILE *src, *des;
+    // Open the source file for reading
     if ((src = fopen(arguments[1], "r")) == NULL)
     {
+        // Print an error message if the source file cannot be opened
         puts("Erorr");
         return;
     }
+    // Open the destination file for writing
     if ((des = fopen(arguments[2], "w")) == NULL)
     {
+        // Print an error message if the destination file cannot be opened
         puts("Erorr");
         fclose(src);
         return;
     }
-
+    // Copy contents from source file to destination file character by character
     while ((ch = fgetc(src)) != EOF)
     {
         fputc(ch, des);
     }
+    // Close both files after copying is done
     fclose(src);
     fclose(des);
 }
@@ -334,13 +320,17 @@ void delete(char **path)
 
 void systemCall(char **arg)
 {
-
+    // Create a child process
     pid_t pid = fork();
+    // Check for fork error
     if (pid == -1)
     {
         printf("fork err\n");
         return;
     }
+    // Child process
+    // Execute the command with the given arguments
+    // If execvp returns, it means an error occurred
     if (pid == 0 && execvp(arg[0], arg) == -1)
         exit(1);
 }
@@ -475,16 +465,18 @@ void mypipe(char **argv1, char **argv2)
 
 void move(char **args)
 {
+    // Initialize source and destination paths
     char srcPath[2048] = {0};
     char destPath[2048] = {0};
 
+    // Construct source path
     strcat(srcPath, args[1]);
     if (args[2] != NULL)
     {
         strcat(srcPath, " ");
         strcat(srcPath, args[2]);
     }
-
+    // Construct destination path
     if (args[3] != NULL)
     {
         strcat(destPath, args[3]);
@@ -495,6 +487,7 @@ void move(char **args)
         }
     }
 
+    // Print the attempted move operation
     printf("Attempting to move from '%s' to '%s'\n", srcPath, destPath);
 
     // Attempt to move/rename the file
@@ -504,6 +497,7 @@ void move(char **args)
     }
     else
     {
+        // Print error message if the move operation fails
         perror("Error moving file");
     }
 }
@@ -575,6 +569,7 @@ void echorite(char **args)
             foundRedirection = 1;
             if (args[i + 1] != NULL)
             {
+                // Construct file path from command arguments
                 for (int j = i + 1; args[j] != NULL; j++)
                 {
                     if (j > i + 1)
@@ -591,23 +586,26 @@ void echorite(char **args)
         }
         else
         {
-
+            // Construct text to write from command arguments
             if (i > 1)
                 strcat(textToWrite, " ");
             strcat(textToWrite, args[i]);
         }
     }
+    // Check if ">" redirection operator is found
     if (!foundRedirection)
     {
         fprintf(stderr, "Redirection operator '>' not found.\n");
         return;
     }
+    // Open file for writing
     FILE *file = fopen(filePath, "w");
     if (!file)
     {
         perror("Error opening file");
         return;
     }
+    // Write text to file
     fprintf(file, "%s\n", textToWrite);
     fclose(file);
 
@@ -616,24 +614,28 @@ void echorite(char **args)
 
 void readd(char **args)
 {
+    // Check if file path is provided
     if (args[1] == NULL)
     {
         fprintf(stderr, "Usage: read <path>\n");
         return;
     }
     char filePath[2048] = {0};
+    // Construct file path from command arguments
     for (int i = 1; args[i] != NULL; ++i)
     {
         if (i > 1)
             strcat(filePath, " ");
         strcat(filePath, args[i]);
     }
+    // Open file for reading
     FILE *file = fopen(filePath, "r");
     if (!file)
     {
         perror("Error opening file");
         return;
     }
+    // Read and print file contents line by line
     char buffer[1024];
     while (fgets(buffer, sizeof(buffer), file) != NULL)
     {

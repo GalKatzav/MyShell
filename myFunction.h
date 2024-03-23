@@ -39,7 +39,7 @@ char *getInputFromUser();
  * array of strings to store the tokens. The caller is responsible for freeing
  * the memory allocated for the array and its elements when it's no longer needed.
  *
- * @param input A pointer to the string to be split.
+ * @param str A pointer to the string to be split.
  *
  * @return A dynamically allocated array of strings (char**) containing the tokens.
  *         The last element of the array is NULL. Returns NULL if input is NULL
