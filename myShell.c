@@ -74,6 +74,7 @@ int main()
     return 1;
 }
 
+// Welcome function
 void welcome()
 {
     printf(
