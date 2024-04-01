@@ -56,6 +56,9 @@ int main()
 
             mypipe(beforePipe, afterPipe);
             wait(NULL);
+
+            free(beforePipe);
+            free(afterPipe);
         }
         else if (strcmp(input, "mv") == 0)
             move(arguments);
